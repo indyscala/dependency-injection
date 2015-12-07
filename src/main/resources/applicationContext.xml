@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	   					   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="userDao" class="org.indyscala.di.JsonUserDao">
+        <constructor-arg value="/users.json" />
+    </bean>
+
+    <bean id="translator" class="org.indyscala.di.MicrosoftTranslator">
+        <constructor-arg value="#{systemEnvironment['MS_TRANSLATE_API_KEY']}" />
+    </bean>
+
+    <bean id="languageSelector" class="org.indyscala.di.UserLanguageSelector"/>
+
+    <bean id="greetingService" class="org.indyscala.di.HelloUserGreetingService" />
+
+    <bean id="multilingualGreetingService" class="org.indyscala.di.MultilingualGreetingService">
+        <constructor-arg ref="greetingService" />
+        <constructor-arg ref="languageSelector" />
+        <constructor-arg ref="translator" />
+    </bean>
+
+    <bean id="greeter" class="org.indyscala.di.ConsoleGreeter">
+        <constructor-arg ref="userDao" />
+        <constructor-arg ref="multilingualGreetingService" />
+    </bean>
+</beans>
